@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'; object-src 'none'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Permissions-Policy"
+      content="camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    />
+    <meta
+      name="description"
+      content="Inspect and strip JPEG and PNG metadata (EXIF, GPS, IPTC, XMP) entirely in your browser. Nothing is uploaded."
+    />
+    <title>EXIF Scrubber</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <p class="eyebrow">Local only</p>
+        <h1>EXIF Scrubber</h1>
+        <p class="lede">
+          Open a JPEG or PNG, review the hidden metadata (including GPS, camera, date and software tags), then download a clean copy. The file never leaves this tab: there is no server, and a strict Content Security Policy sets <code>connect-src 'none'</code> so the page cannot make network requests.
+        </p>
+      </header>
+
+      <section class="panel" aria-labelledby="tool-heading">
+        <h2 id="tool-heading" class="visually-hidden">Inspect and strip metadata</h2>
+
+        <label class="drop" id="drop-zone" for="file-input">
+          <input id="file-input" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" />
+          <span class="drop-label">Drop a JPEG or PNG here, or choose a file</span>
+          <span class="file-meta">Files stay in memory and are limited to 40&nbsp;MiB. WebP, HEIC and RAW are not supported.</span>
+        </label>
+
+        <div class="samples">
+          <button type="button" id="sample-jpeg">Try a sample JPEG</button>
+          <button type="button" id="sample-png">Try a sample PNG</button>
+          <button type="button" id="reset" class="ghost">Reset</button>
+        </div>
+
+        <label class="icc">
+          <input type="checkbox" id="keep-icc" />
+          <span>Keep the ICC color profile, if the file has one. Leave unchecked to strip it as well. This does not affect EXIF, GPS, IPTC, XMP or comments.</span>
+        </label>
+
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <div id="results" hidden></div>
+
+      <section class="limits" aria-labelledby="limits-heading">
+        <h2 id="limits-heading">What this tool does</h2>
+        <ul>
+          <li>Supports JPEG and PNG only. WebP is not supported.</li>
+          <li>Strips metadata as bytes: JPEG APP1 (EXIF and XMP), APP13 (IPTC/Photoshop), COM comments, and optionally APP2 ICC; PNG <code>eXIf</code>, <code>tEXt</code>, <code>zTXt</code>, <code>iTXt</code>, <code>tIME</code>, and optionally <code>iCCP</code>.</li>
+          <li>Pixel data is copied, not re-encoded, so JPEG/PNG quality is unchanged. There is no canvas fallback.</li>
+          <li>GPS values are shown as plain text and degrees only. They are never sent to an external map API.</li>
+        </ul>
+      </section>
+
+      <footer class="foot">
+        <p>
+          Open source on
+          <a href="https://github.com/ottonielmorais2008-rgb/exif-scrubber">GitHub</a>.
+          The file you choose is not uploaded.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
